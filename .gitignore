@@ -4,3 +4,4 @@ app/gen
 app/out
 app/.settings
 app/.idea
+*.iml
