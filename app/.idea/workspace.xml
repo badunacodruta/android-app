@@ -89,10 +89,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MainActivity.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/org/mihigh/cycling/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="163" column="68" selection-start="5186" selection-end="5186" vertical-scroll-proportion="3.2186234" vertical-offset="0" max-vertical-offset="3030">
+            <state line="163" column="68" selection-start="5186" selection-end="5186" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3030">
               <folding>
                 <element signature="docComment;class#MainActivity#0" expanded="false" />
                 <element signature="method#onStop#0;class#MainActivity#0" expanded="false" />
@@ -136,6 +136,15 @@
                 <element signature="docComment;method#setDialog#0;class#ErrorDialogFragment#0;class#MainActivity#0" expanded="false" />
                 <element signature="method#onCreateDialog#0;class#ErrorDialogFragment#0;class#MainActivity#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="AndroidManifest.xml" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="32" column="41" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.1194332" vertical-offset="421" max-vertical-offset="915">
+              <folding />
             </state>
           </provider>
         </entry>
@@ -519,12 +528,12 @@
       <updated>1396197746050</updated>
       <workItem from="1396197746822" duration="11851000" />
       <workItem from="1396299499957" duration="1509000" />
-      <workItem from="1396373977958" duration="2536000" />
+      <workItem from="1396373977958" duration="2985000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15896000" />
+    <option name="totallyTimeSpent" value="16345000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="4" y="22" width="1436" height="878" extended-state="0" />
@@ -736,13 +745,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="41" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.0" vertical-offset="461" max-vertical-offset="915">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/res/values/dimens.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="499">
@@ -781,7 +783,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/org/mihigh/cycling/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="163" column="68" selection-start="5186" selection-end="5186" vertical-scroll-proportion="3.2186234" vertical-offset="0" max-vertical-offset="3030">
+        <state line="163" column="68" selection-start="5186" selection-end="5186" vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3030">
           <folding>
             <element signature="docComment;class#MainActivity#0" expanded="false" />
             <element signature="method#onStop#0;class#MainActivity#0" expanded="false" />
@@ -825,6 +827,13 @@
             <element signature="docComment;method#setDialog#0;class#ErrorDialogFragment#0;class#MainActivity#0" expanded="false" />
             <element signature="method#onCreateDialog#0;class#ErrorDialogFragment#0;class#MainActivity#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="32" column="41" selection-start="1354" selection-end="1354" vertical-scroll-proportion="0.1194332" vertical-offset="421" max-vertical-offset="915">
+          <folding />
         </state>
       </provider>
     </entry>
