@@ -1,7 +1,9 @@
+
+*.iml
+
 app/local.properties
 app/bin
 app/gen
 app/out
 app/.settings
 app/.idea
-*.iml

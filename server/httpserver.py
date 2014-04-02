@@ -25,6 +25,10 @@ class CyclingHTTPRequestHandler(BaseHTTPRequestHandler):
         global state
 
 
+        self.send_response(200)
+        self.send_header('Content-type','text/javascript')
+        self.end_headers()  
+
         if '/register' in self.path:
             # /register/{roomId}/{useriD}
 
@@ -62,6 +66,8 @@ class CyclingHTTPRequestHandler(BaseHTTPRequestHandler):
 
             self.wfile.write(state.to_JSON())
 
+        
+
 
     
 def run():
@@ -69,7 +75,7 @@ def run():
 
     #ip and port of servr
     #by default http server port is 80
-    server_address = ('127.0.0.1', 80)
+    server_address = ('', 80)
     httpd = HTTPServer(server_address, CyclingHTTPRequestHandler)
     print('http server is running...')
     httpd.serve_forever()
