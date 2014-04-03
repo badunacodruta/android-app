@@ -1,6 +1,8 @@
 package org.mihigh.cycling;
 
 
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -23,9 +25,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.mihigh.cycling.location.LocationUpdater;
+import org.mihigh.cycling.location.dto.UserInfo;
 
 /**
  * This the app's main Activity. It provides buttons for requesting the various features of the app, displays the
@@ -68,6 +73,7 @@ public class MainActivity extends FragmentActivity implements
 
   private GoogleMap map;
   private LocationUpdater locationUpdater;
+  private float zoom = 10;
 
 
   /*
@@ -195,6 +201,12 @@ public class MainActivity extends FragmentActivity implements
     // map.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
     map.setMyLocationEnabled(true);
+    map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+      @Override
+      public void onCameraChange(CameraPosition cameraPosition) {
+        zoom = cameraPosition.zoom;
+      }
+    });
   }
 
   /*
@@ -384,7 +396,7 @@ public class MainActivity extends FragmentActivity implements
 
   public void setLatLng(Location location) {
     mLatLng.setText(LocationUtils.getLatLng(this, location));
-    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), 15));
+    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()), zoom));
   }
 
 
@@ -431,6 +443,20 @@ public class MainActivity extends FragmentActivity implements
       // Show the error dialog in the DialogFragment
       errorFragment.show(getSupportFragmentManager(), LocationUtils.APPTAG);
     }
+  }
+
+  public void updateOthersPossitions(HashMap<String, UserInfo> users) {
+    map.clear();
+
+    for (String userId : users.keySet()) {
+      UserInfo userInfo = users.get(userId);
+
+      map.addMarker(new MarkerOptions()
+                        .title(userId)
+                        .position(new LatLng(Double.valueOf(userInfo.lat), Double.valueOf(userInfo.lng))));
+
+    }
+
   }
 
   /**

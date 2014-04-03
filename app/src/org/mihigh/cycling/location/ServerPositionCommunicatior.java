@@ -10,7 +10,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.mihigh.cycling.MainActivity;
 import org.mihigh.cycling.commons.Json;
+import org.mihigh.cycling.location.dto.ServerRooms;
 
 public class ServerPositionCommunicatior extends AsyncTask {
 
@@ -21,10 +23,13 @@ public class ServerPositionCommunicatior extends AsyncTask {
   public static final String ROOM_ID = "room1";
   public static final String USER_ID = "MihaiC";
 
+  private MainActivity mapActivity;
+
 
   @Override
   protected Object doInBackground(Object[] params) {
     Location location = (Location) params[0];
+    mapActivity = (MainActivity) params[1];
 
     HttpClient httpclient = new DefaultHttpClient();
     try {
@@ -47,6 +52,7 @@ public class ServerPositionCommunicatior extends AsyncTask {
     super.onPostExecute(o);
 
     ServerRooms rooms = Json.parseJson(responseString, ServerRooms.class);
+    mapActivity.updateOthersPossitions(rooms.rooms.get(ROOM_ID));
 
 
   }
