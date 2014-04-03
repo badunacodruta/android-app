@@ -7,3 +7,5 @@ app/gen
 app/out
 app/.settings
 app/.idea
+
+#app/res/values/myKeys.xml

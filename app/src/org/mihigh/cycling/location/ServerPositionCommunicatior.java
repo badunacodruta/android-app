@@ -10,7 +10,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.mihigh.cycling.MainActivity;
+import org.mihigh.cycling.MapActivity;
 import org.mihigh.cycling.commons.Json;
 import org.mihigh.cycling.location.dto.ServerRooms;
 
@@ -18,18 +18,18 @@ public class ServerPositionCommunicatior extends AsyncTask {
 
 
   //  public static final String HOST = "mciorobe.eur.adobe.com";
-  public static final String HOST = "169.254.246.129";
+  public static final String HOST = "192.168.0.101";
   public static final String URI = "http://" + HOST + "/get/%s/%s/%s/%s";
   public static final String ROOM_ID = "room1";
   public static final String USER_ID = "MihaiC";
 
-  private MainActivity mapActivity;
+  private MapActivity mapActivity;
 
 
   @Override
   protected Object doInBackground(Object[] params) {
     Location location = (Location) params[0];
-    mapActivity = (MainActivity) params[1];
+    mapActivity = (MapActivity) params[1];
 
     HttpClient httpclient = new DefaultHttpClient();
     try {

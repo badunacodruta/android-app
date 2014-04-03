@@ -74,6 +74,7 @@ class CyclingHTTPRequestHandler(BaseHTTPRequestHandler):
                 setattr(userList, userId, Object())
                 setattr(state.rooms, roomId, userList)
     def update_user_position(self, roomId, userId, lat, lng):
+        self.register_user(roomId, userId)
         userList = getattr(state.rooms, roomId)
         userInfo = getattr(userList, userId)
         userInfo.lat = lat

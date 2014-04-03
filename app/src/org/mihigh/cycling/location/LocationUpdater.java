@@ -4,13 +4,13 @@ import android.location.Location;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.mihigh.cycling.MainActivity;
+import org.mihigh.cycling.MapActivity;
 
 public class LocationUpdater implements LocationListener {
 
-  private MainActivity activity;
+  private MapActivity activity;
 
-  public LocationUpdater(MainActivity activity) {
+  public LocationUpdater(MapActivity activity) {
     this.activity = activity;
   }
 
