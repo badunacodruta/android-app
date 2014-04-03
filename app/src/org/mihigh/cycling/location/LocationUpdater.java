@@ -4,8 +4,6 @@ import android.location.Location;
 
 import com.google.android.gms.location.LocationListener;
 
-import org.mihigh.cycling.MapActivity;
-
 public class LocationUpdater implements LocationListener {
 
   private MapActivity activity;

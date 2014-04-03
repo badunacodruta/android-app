@@ -1,10 +1,12 @@
 
-package org.mihigh.cycling;
+package org.mihigh.cycling.location;
 
 import android.content.Context;
 import android.content.res.Resources;
 
 import com.google.android.gms.common.ConnectionResult;
+
+import org.mihigh.cycling.R;
 
 /**
  * Map error codes to error messages.

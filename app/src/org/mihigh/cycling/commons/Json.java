@@ -24,7 +24,7 @@ public class Json {
       return mapper.readValue(json, type);
     } catch (Exception e) {
       e.printStackTrace();
-      throw new RuntimeException(e);
+      return null;
     }
   }
 
@@ -33,7 +33,7 @@ public class Json {
       return mapper.writeValueAsString(object);
     } catch (IOException e) {
       e.printStackTrace();
-      throw new RuntimeException(e);
+      return null;
     }
   }
 

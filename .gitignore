@@ -8,4 +8,4 @@ app/out
 app/.settings
 app/.idea
 
-#app/res/values/myKeys.xml
+app/res/values/myKeys.xml

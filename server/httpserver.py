@@ -93,5 +93,4 @@ def run():
     print('http server is running...')
     httpd.serve_forever()
     
-if __name__ == '__main__':
-    run()
+run()

@@ -1,20 +1,15 @@
-package org.mihigh.cycling;
-
+package org.mihigh.cycling.location;
 
 import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -28,83 +23,61 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import org.mihigh.cycling.location.LocationUpdater;
+import org.mihigh.cycling.R;
 import org.mihigh.cycling.location.dto.UserInfo;
 
-/**
- * This the app's main Activity. It provides buttons for requesting the various features of the app, displays the
- * current location, the current address, and the status of the location client and updating services.
- *
- * {@link #getLocation} gets the current location using the Location Services getLastLocation() function. {@link } calls
- * geocoding to get a street address for the current location. {@link #startUpdates} sends a request to Location
- * Services to send periodic location updates to the Activity. {@link #stopUpdates} cancels previous periodic update
- * requests.
- *
- * The update interval is hard-coded to be 5 seconds.
- */
-public class MapActivity extends FragmentActivity implements
-                                                  GooglePlayServicesClient.ConnectionCallbacks,
-                                                  GooglePlayServicesClient.OnConnectionFailedListener {
+public class MapActivity extends FragmentActivity
+    implements GooglePlayServicesClient.ConnectionCallbacks, GooglePlayServicesClient.OnConnectionFailedListener {
 
-  private LocationRequest mLocationRequest;
-  private LocationClient mLocationClient;
-  SharedPreferences mPrefs;
-  SharedPreferences.Editor mEditor;
-  boolean mUpdatesRequested = false;
-  private GoogleMap map;
+  private LocationRequest locationRequest;
+  private LocationClient locationClient;
   private LocationUpdater locationUpdater;
-  private float zoom = 10;
+  private GoogleMap map;
 
+  private float zoom = 10;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main);
-
-    mLocationRequest = LocationRequest.create();
-    mLocationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
-    mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-    mLocationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
-    mUpdatesRequested = false;
-    mPrefs = getSharedPreferences(LocationUtils.SHARED_PREFERENCES, Context.MODE_PRIVATE);
-    mEditor = mPrefs.edit();
-    mLocationClient = new LocationClient(this, this, this);
+    setUpLocation();
     setUpMapIfNeeded();
+  }
+
+  private void setUpLocation() {
+    locationRequest = LocationRequest.create();
+    locationRequest.setInterval(LocationUtils.UPDATE_INTERVAL_IN_MILLISECONDS);
+    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    locationRequest.setFastestInterval(LocationUtils.FAST_INTERVAL_CEILING_IN_MILLISECONDS);
+
+    locationUpdater = new LocationUpdater(this);
+
+    locationClient = new LocationClient(this, this, this);
   }
 
   @Override
   public void onStop() {
-    if (mLocationClient.isConnected()) {
+    if (locationClient.isConnected()) {
       stopPeriodicUpdates();
     }
-    mLocationClient.disconnect();
+    locationClient.disconnect();
     super.onStop();
   }
 
   @Override
   public void onPause() {
-    mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, mUpdatesRequested);
-    mEditor.commit();
     super.onPause();
   }
 
   @Override
   public void onStart() {
     super.onStart();
-    mLocationClient.connect();
+    locationClient.connect();
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    if (mPrefs.contains(LocationUtils.KEY_UPDATES_REQUESTED)) {
-      mUpdatesRequested = mPrefs.getBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
-
-    } else {
-      mEditor.putBoolean(LocationUtils.KEY_UPDATES_REQUESTED, false);
-      mEditor.commit();
-    }
-
     setUpMapIfNeeded();
   }
 
@@ -116,7 +89,6 @@ public class MapActivity extends FragmentActivity implements
     if (map == null) {
       return;
     }
-
     map.setMyLocationEnabled(true);
     map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
       @Override
@@ -128,7 +100,6 @@ public class MapActivity extends FragmentActivity implements
 
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-
     switch (requestCode) {
       case LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST:
         switch (resultCode) {
@@ -147,7 +118,6 @@ public class MapActivity extends FragmentActivity implements
 
   private boolean servicesConnected() {
     int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
-
     if (ConnectionResult.SUCCESS == resultCode) {
       Log.d(LocationUtils.APPTAG, getString(R.string.play_services_available));
       return true;
@@ -162,34 +132,15 @@ public class MapActivity extends FragmentActivity implements
     }
   }
 
-  public void getLocation(View v) {
-    if (servicesConnected()) {
-      Location currentLocation = mLocationClient.getLastLocation();
-    }
-  }
-
-  public void startUpdates(View v) {
-    mUpdatesRequested = true;
-
+  public void startUpdates() {
     if (servicesConnected()) {
       startPeriodicUpdates();
-    }
-  }
-
-  public void stopUpdates(View v) {
-    mUpdatesRequested = false;
-
-    if (servicesConnected()) {
-      stopPeriodicUpdates();
     }
   }
 
   @Override
   public void onConnected(Bundle bundle) {
-    if (mUpdatesRequested) {
-      startPeriodicUpdates();
-    }
-    startUpdates(null);
+    startUpdates();
   }
 
   @Override
@@ -200,9 +151,7 @@ public class MapActivity extends FragmentActivity implements
   public void onConnectionFailed(ConnectionResult connectionResult) {
     if (connectionResult.hasResolution()) {
       try {
-        connectionResult.startResolutionForResult(
-            this,
-            LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
+        connectionResult.startResolutionForResult(this, LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
       } catch (IntentSender.SendIntentException e) {
         e.printStackTrace();
       }
@@ -211,26 +160,22 @@ public class MapActivity extends FragmentActivity implements
     }
   }
 
-
   public void setLatLng(Location location) {
     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
     map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
   }
 
   private void startPeriodicUpdates() {
-    locationUpdater = new LocationUpdater(this);
-    mLocationClient.requestLocationUpdates(mLocationRequest, locationUpdater);
+    locationClient.requestLocationUpdates(locationRequest, locationUpdater);
   }
 
   private void stopPeriodicUpdates() {
-    mLocationClient.removeLocationUpdates(locationUpdater);
+    locationClient.removeLocationUpdates(locationUpdater);
   }
 
   private void showErrorDialog(int errorCode) {
-    Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(errorCode,
-                                                               this,
-                                                               LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
+    Dialog errorDialog =
+        GooglePlayServicesUtil.getErrorDialog(errorCode, this, LocationUtils.CONNECTION_FAILURE_RESOLUTION_REQUEST);
     if (errorDialog != null) {
       ErrorDialogFragment errorFragment = new ErrorDialogFragment();
       errorFragment.setDialog(errorDialog);
@@ -242,25 +187,11 @@ public class MapActivity extends FragmentActivity implements
     map.clear();
     for (String userId : users.keySet()) {
       UserInfo userInfo = users.get(userId);
-      map.addMarker(new MarkerOptions()
-                        .title(userId)
-                        .position(new LatLng(Double.valueOf(userInfo.lat), Double.valueOf(userInfo.lng))));
+      LatLng position = new LatLng(Double.valueOf(userInfo.lat), Double.valueOf(userInfo.lng));
+      map.addMarker(new MarkerOptions().title(userId).position(position));
     }
   }
 
-  public static class ErrorDialogFragment extends DialogFragment {
-    private Dialog mDialog;
-    public ErrorDialogFragment() {
-      super();
-      mDialog = null;
-    }
-    public void setDialog(Dialog dialog) {
-      mDialog = dialog;
-    }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-      return mDialog;
-    }
-  }
 }
+

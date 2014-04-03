@@ -10,7 +10,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.mihigh.cycling.MapActivity;
 import org.mihigh.cycling.commons.Json;
 import org.mihigh.cycling.location.dto.ServerRooms;
 
@@ -42,12 +41,15 @@ public class ServerPositionCommunicatior extends AsyncTask {
       return responseString;
     } catch (IOException e) {
       e.printStackTrace();
-      throw new RuntimeException(e);
+      return null;
     }
   }
 
   @Override
   protected void onPostExecute(Object o) {
+    if (o == null) {
+      return;
+    }
     String responseString = (String) o;
     super.onPostExecute(o);
 
