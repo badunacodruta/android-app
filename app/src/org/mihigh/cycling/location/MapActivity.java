@@ -96,6 +96,15 @@ public class MapActivity extends FragmentActivity
         zoom = cameraPosition.zoom;
       }
     });
+
+
+
+    map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+      @Override
+      public boolean onMyLocationButtonClick() {
+        return false;
+      }
+    });
   }
 
   @Override
