@@ -79,6 +79,7 @@ class CyclingHTTPRequestHandler(BaseHTTPRequestHandler):
         userInfo = getattr(userList, userId)
         userInfo.lat = lat
         userInfo.lng = lng
+        userInfo.thumbnailUrl = "https://scontent-b-fra.xx.fbcdn.net/hphotos-frc3/t1.0-9/579844_431638206922417_1213358917_n.jpg"
         
 
 
