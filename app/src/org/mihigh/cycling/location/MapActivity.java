@@ -34,7 +34,11 @@ public class MapActivity extends FragmentActivity
   private LocationUpdater locationUpdater;
   private GoogleMap map;
 
-  private float zoom = 10;
+  private float zoom = 17;
+
+  // Used for setting the map view to the last GPS position
+  private boolean useGpsUpdates = true;
+  private boolean lastUpdateIsGps = true;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -94,14 +98,22 @@ public class MapActivity extends FragmentActivity
       @Override
       public void onCameraChange(CameraPosition cameraPosition) {
         zoom = cameraPosition.zoom;
+        if (lastUpdateIsGps) {
+          lastUpdateIsGps = false;
+          return;
+        }
+
+        useGpsUpdates = false;
       }
     });
 
-
+    map.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    map.animateCamera(CameraUpdateFactory.zoomTo(zoom));
 
     map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
       @Override
       public boolean onMyLocationButtonClick() {
+        useGpsUpdates = true;
         return false;
       }
     });
@@ -171,7 +183,10 @@ public class MapActivity extends FragmentActivity
 
   public void setLatLng(Location location) {
     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    if (useGpsUpdates) {
+      lastUpdateIsGps = true;
+      map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
+    }
   }
 
   private void startPeriodicUpdates() {
