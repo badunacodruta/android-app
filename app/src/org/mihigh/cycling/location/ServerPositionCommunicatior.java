@@ -2,7 +2,11 @@ package org.mihigh.cycling.location;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.URL;
+import java.util.HashMap;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
 
@@ -13,6 +17,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.mihigh.cycling.commons.Constants;
 import org.mihigh.cycling.commons.Json;
 import org.mihigh.cycling.location.dto.ServerRooms;
+import org.mihigh.cycling.location.dto.UserDto;
+import org.mihigh.cycling.location.dto.UserInfo;
 
 public class ServerPositionCommunicatior extends AsyncTask {
 
@@ -25,13 +31,34 @@ public class ServerPositionCommunicatior extends AsyncTask {
 
     HttpClient httpclient = new DefaultHttpClient();
     try {
-      String uri = String.format(Constants.URI, Constants.ROOM_ID, Constants.USER_ID, location.getLatitude(), location.getLongitude());
+      String uri =
+          String.format(Constants.URI,
+                        Constants.ROOM_ID,
+                        Constants.USER_ID,
+                        location.getLatitude(),
+                        location.getLongitude());
       HttpResponse response = httpclient.execute(new HttpGet(uri));
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       response.getEntity().writeTo(out);
       String responseString = out.toString();
 
-      return responseString;
+      ServerRooms rooms = Json.parseJson(responseString, ServerRooms.class);
+      HashMap<String, UserDto> usersInfo = rooms.rooms.get(Constants.ROOM_ID);
+      HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
+
+      for (String userId : usersInfo.keySet()) {
+        UserDto userDto = usersInfo.get(userId);
+
+        try {
+          URL url = new URL(userDto.thumbnailUrl);
+          Bitmap thumbnail = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+          users.put(userId, new UserInfo(userDto.lat, userDto.lng, thumbnail));
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+
+      return users;
     } catch (IOException e) {
       e.printStackTrace();
       return null;
@@ -43,12 +70,9 @@ public class ServerPositionCommunicatior extends AsyncTask {
     if (o == null) {
       return;
     }
-    String responseString = (String) o;
+    HashMap<String, UserInfo> users = (HashMap<String, UserInfo>) o;
     super.onPostExecute(o);
 
-    ServerRooms rooms = Json.parseJson(responseString, ServerRooms.class);
-    mapActivity.updateOthersPossitions(rooms.rooms.get(Constants.ROOM_ID));
-
-
+    mapActivity.updateOthersPossitions(users);
   }
 }

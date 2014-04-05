@@ -6,6 +6,13 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -19,11 +26,13 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.mihigh.cycling.R;
+import org.mihigh.cycling.commons.Constants;
 import org.mihigh.cycling.location.dto.UserInfo;
 
 public class MapActivity extends FragmentActivity
@@ -209,13 +218,48 @@ public class MapActivity extends FragmentActivity
 
   public void updateOthersPossitions(HashMap<String, UserInfo> users) {
     map.clear();
+    Bitmap mask = BitmapFactory.decodeResource(this.getResources(), R.drawable.marker_mask);
+
     for (String userId : users.keySet()) {
       UserInfo userInfo = users.get(userId);
+      if (userId.equalsIgnoreCase(Constants.USER_ID)) {
+        continue;
+      }
       LatLng position = new LatLng(Double.valueOf(userInfo.lat), Double.valueOf(userInfo.lng));
-      map.addMarker(new MarkerOptions().title(userId).position(position));
+      userInfo.thumbnail = mask(userInfo.thumbnail, mask);
+      map.addMarker(new MarkerOptions().title(userId).position(position)).setIcon(
+          BitmapDescriptorFactory.fromBitmap(userInfo.thumbnail)
+      );
     }
   }
 
+  private Bitmap overlay(Bitmap bmp1, Bitmap bmp2) {
+    Bitmap bmOverlay = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp1.getConfig());
+    Bitmap mask = Bitmap.createBitmap(bmp1.getWidth(), bmp1.getHeight(), bmp2.getConfig());
+    Canvas canvas = new Canvas(bmOverlay);
+    canvas.drawBitmap(bmp1, new Matrix(), null);
+    canvas.drawBitmap(bmp2, new Matrix(), null);
+    return bmOverlay;
+  }
+
+
+  private Bitmap mask(Bitmap mainImage, Bitmap maskImage) {
+    Bitmap result = Bitmap.createBitmap(maskImage.getWidth(), maskImage.getHeight(), Bitmap.Config.ARGB_8888);
+    mainImage = Bitmap.createScaledBitmap(mainImage,
+                                          maskImage.getWidth(),
+                                          maskImage.getHeight(), false);
+    Canvas canvas = new Canvas(result);
+
+    Paint paint = new Paint();
+    paint.setFilterBitmap(false);
+
+    canvas.drawBitmap(mainImage, 0, 0, paint);
+    paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
+    canvas.drawBitmap(maskImage, 0, 0, paint);
+    paint.setXfermode(null);
+
+    return result;
+  }
 
 }
 

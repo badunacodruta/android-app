@@ -4,6 +4,9 @@ import java.util.HashMap;
 
 public class ServerRooms {
 
-  public HashMap<String, HashMap<String, UserInfo>> rooms = new HashMap<String, HashMap<String, UserInfo>>();
+  public HashMap<String, HashMap<String, UserDto>> rooms = new HashMap<String, HashMap<String, UserDto>>();
+
+
+
 }
 
