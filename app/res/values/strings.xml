@@ -42,4 +42,13 @@
     <string name="unknown_activity_request_code">
         Received an unknown activity request code %1$d in onActivityResult.
     </string>
+    <string name="new_room">Create new room</string>
+    <string name="old_rooms">All joined rooms</string>
+    <string name="invitations">Invitations</string>
+    <string name="rooms">Rooms</string>
+    <string name="activities">Activities</string>
+    <string name="personal_info">Personal info</string>
+    <string name="settings">Settings</string>
+    <string name="room_name">room name</string>
+    <string name="create_room">Create room</string>
 </resources>

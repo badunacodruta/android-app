@@ -89,7 +89,7 @@ def run():
 
     #ip and port of servr
     #by default http server port is 80
-    server_address = ('', 80)
+    server_address = ('', 8000)
     httpd = HTTPServer(server_address, CyclingHTTPRequestHandler)
     print('http server is running...')
     httpd.serve_forever()
